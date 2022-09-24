@@ -5,11 +5,14 @@ from pydantic import BaseModel
 
 # Shared properties
 class UserBase(BaseModel):
-    uuid: str
     full_name: Optional[str] = None
+
+class UserInfo(UserBase):
+    pass
 
 # User DB Schema
 class UserInDBBase(UserBase):
+    user_id: int
 
     class Config:
         orm_mode = True
