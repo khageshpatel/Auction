@@ -1,4 +1,5 @@
-from typing import Any, List
+from typing import Any, List, Optional
+from app.models.auction import AuctionBid
 from app.schemas.auction import Auction, AuctionCreateRequest, AuctionId, PlaceBidRequest, UpdateAuctionStatusRequest
 
 from app.db.dependencies import get_auction_dal
@@ -11,6 +12,26 @@ from app import schemas
 import time 
 
 router = APIRouter()
+
+@router.get(
+    "/list_auction",
+    response_model = List[schemas.Auction])
+async def list_auction(
+    user_id: Optional[int] = None,
+    search_pattern: Optional[str] = None,
+    min_start_time: Optional[int] = None,
+    max_start_time: Optional[int] = None,
+    limit: Optional[int] = None,
+    offset: Optional[int] = None,
+    auction_dal: AuctionDal = Depends(get_auction_dal)) -> List[Auction]:
+    """
+    List auction.
+    """
+    try:
+        auctions =  await auction_dal.list_auction(user_id, search_pattern, min_start_time, max_start_time, limit, offset)
+        return auctions
+    except Exception as e:
+        Handle(e)
 
 
 @router.post(
@@ -66,5 +87,20 @@ async def update_auction_status(request: UpdateAuctionStatusRequest, auction_dal
         if more_wait != 0:
             # We couldn't update the db we must try after some time.
             create_task.s(request.auction_id, request.after_time, request.from_status, request.to_status).apply_async(countdown=more_wait)
+    except Exception as e:
+        Handle(e)
+
+@router.get(
+    "/bid_history")
+async def update_auction_status(
+    user_id: int,
+    limit: Optional[int] = None,
+    offset: Optional[int] = None,
+    auction_dal: AuctionDal = Depends(get_auction_dal)) -> List[schemas.AuctionBid]:
+    """
+    Fetch bid history.
+    """
+    try:
+        return await auction_dal.bid_history(user_id, limit, offset)
     except Exception as e:
         Handle(e)

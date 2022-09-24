@@ -8,11 +8,13 @@ from .user import User
 # Auction Model
 class Auction(BaseModel):
     auction_id: int
+    name: str
     product: Product
     auction_status: AuctionStatus
     start_time: int
     end_time: int
     number_extensions: int
+    highest_bid: Optional[int]
 
     class Config:
         orm_mode = True
@@ -20,6 +22,7 @@ class Auction(BaseModel):
 # Request to create auction
 class AuctionCreateRequest(BaseModel):
     product_id: str
+    name: str
     user_id: int
     start_time: int
     min_bid: float
@@ -41,3 +44,9 @@ class UpdateAuctionStatusRequest(BaseModel):
     after_time: int
     from_status: AuctionStatus
     to_status: AuctionStatus
+
+# Auction bid 
+class AuctionBid(BaseModel):
+    bid_id: int
+    auction: Auction
+    bid: float

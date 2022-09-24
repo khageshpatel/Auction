@@ -9,6 +9,8 @@ class Auction(Base):
     __tablename__ = "Auction"
 
     auction_id = Column(Integer, primary_key=True, index=True)
+
+    name = Column(String)
     
     product = relationship("Product", back_populates="auctions", lazy="joined")
     product_id = Column(String, ForeignKey("Product.product_id"))
@@ -26,6 +28,9 @@ class Auction(Base):
     min_bid = Column(Float)
     bids = relationship("AuctionBid", back_populates="auction")
 
+    highest_bid = Column(Float)
+
+# ORM for auction bid
 class AuctionBid(Base):
     __tablename__ = "AuctionBid"
 
