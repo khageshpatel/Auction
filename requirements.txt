@@ -5,3 +5,5 @@ asyncpg
 alembic
 celery
 asgiref
+pytest
+httpx

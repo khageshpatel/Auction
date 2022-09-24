@@ -2,10 +2,6 @@ from app.schemas import auction
 from celery import Celery
 from app.core.config import settings
 from app.common.types import AuctionStatus
-from app.db.connector import async_session, sync_session
-from app.db.auction_dal import AuctionDal
-from asgiref.sync import async_to_sync
-import asyncio
 import requests
 
 celery = Celery(__name__)
