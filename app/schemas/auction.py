@@ -34,3 +34,10 @@ class PlaceBidRequest(BaseModel):
     user_id: int
     bid: float
     auction_id: int
+
+# Request to update auction status.
+class UpdateAuctionStatusRequest(BaseModel):
+    auction_id: int
+    after_time: int
+    from_status: AuctionStatus
+    to_status: AuctionStatus

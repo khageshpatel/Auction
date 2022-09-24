@@ -10,7 +10,7 @@ from app.common.constants import ErrorCode
 from fastapi import HTTPException
 from sqlalchemy.future import select
 import logging
-import time    
+import time
 
 # Auction data access layer.
 class AuctionDal():
@@ -81,3 +81,25 @@ class AuctionDal():
             auction.end_time  += settings.AUCTION_EXTEND_WINDOW_SEC
 
         self.db_session.flush()
+    
+    async def update_status(self, auction_id: int, after_time: int, from_status: AuctionStatus, to_status: AuctionStatus) -> int:
+        # Update auction status
+        # Returns amount of time after which this should be retried
+        auction = await self.db_session.get(Auction, auction_id)
+        if auction.auction_status != from_status:
+            # DB has changed state
+            return 0
+        epoch_time = int(time.time())
+        if epoch_time < after_time:
+            # This should not hapend unless true time between server is widely different.
+            return after_time - epoch_time
+
+        ref_time = auction.start_time if from_status == AuctionStatus.WAITING else auction.end_time
+        if ref_time <= epoch_time:
+            # change status
+            auction.auction_status = to_status
+            self.db_session.flush()
+            return 0
+        
+        # Maybe end time has been increased we should retry this op
+        return auction.start_time - epoch_time

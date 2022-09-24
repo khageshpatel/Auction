@@ -26,6 +26,9 @@ class Settings(BaseSettings):
     AUCTION_EXTEND_WINDOW_SEC = 10*60
     AUCTION_MAX_EXTEND_TIMES = 100
 
+    CELERY_BROKER_URL: str
+    CELERY_RESULT_BACKEND: str
+
     class Config:
         case_sensitive = True
         env_file = '.env'
