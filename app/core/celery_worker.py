@@ -15,7 +15,7 @@ def send_internal_request(auction_id: int, after_time: int, from_status: Auction
         'from_status': str(from_status),
         'to_status': str(to_status),
     }
-    requests.post('http://localhost:8000/auction/update_auction_status', json=json_data)
+    requests.post('http://web:8000/auction/update_auction_status', json=json_data)
 
 @celery.task(name="change_auction_status")
 def create_task(auction_id: int, after_time: int, from_status: AuctionStatus, to_status: AuctionStatus):

@@ -1,4 +1,3 @@
-from math import prod
 from sqlalchemy.orm import Session
 from app.models.user import User
 from app.models.product import Product

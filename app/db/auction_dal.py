@@ -1,7 +1,4 @@
-from msilib.schema import Error
 from sqlalchemy.orm import Session, joinedload
-from app.models.user import User
-from app.models.product import Product
 from app import schemas
 from app.models.auction import Auction, AuctionBid, AuctionBid
 from app.common.types import AuctionStatus
@@ -106,7 +103,7 @@ class AuctionDal():
             return 0
         
         # Maybe end time has been increased we should retry this op
-        return auction.start_time - epoch_time
+        return ref_time - epoch_time
     
     async def list_auction(
         self,
